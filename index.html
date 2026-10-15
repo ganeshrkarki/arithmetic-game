@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ZetaPulse — High-Velocity Arithmetic Trainer</title>
+    <title>ZetaPulse — Minimalist Speed Arithmetic</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts: Inter & JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <script>
@@ -22,9 +22,26 @@
                         mono: ['JetBrains Mono', 'monospace'],
                     },
                     colors: {
-                        slate: {
-                            850: '#151e32',
-                            950: '#090d16',
+                        paper: {
+                            bg: '#F9F9F8',
+                            card: '#FFFFFF',
+                            subtle: '#F2F2EE',
+                            border: '#E4E4E7',
+                            ink: '#18181B',
+                            muted: '#71717A',
+                        },
+                        obsidian: {
+                            bg: '#121212',
+                            card: '#18181B',
+                            subtle: '#1F1F23',
+                            border: '#27272A',
+                            ink: '#F4F4F5',
+                            muted: '#71717A',
+                        },
+                        accent: {
+                            DEFAULT: '#3F6253', // Muted Braun/Swiss sage
+                            light: '#527968',
+                            braun: '#D95D39' // Subtle Dieter Rams functional orange for indicators
                         }
                     }
                 }
@@ -32,38 +49,27 @@
         }
     </script>
     <style>
-        /* Custom animations and high-velocity styles */
-        @keyframes pulse-fast {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.06); }
+        /* Crisp Swiss / E-ink / Monkeytype inspired transitions */
+        @keyframes fade-in {
+            0% { opacity: 0; transform: translateY(4px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
-        @keyframes pop-in {
-            0% { opacity: 0; transform: translateY(8px) scale(0.96); }
-            100% { opacity: 1; transform: translateY(0) scale(1); }
+        @keyframes number-tick {
+            0% { opacity: 0.4; transform: translateY(2px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
-        @keyframes float-up {
-            0% { opacity: 1; transform: translateY(0) scale(1); }
-            100% { opacity: 0; transform: translateY(-28px) scale(1.15); }
+        @keyframes float-up-subtle {
+            0% { opacity: 0.9; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-18px); }
         }
-        @keyframes streak-glow {
-            0%, 100% { box-shadow: 0 0 15px rgba(245, 158, 11, 0.25), inset 0 0 15px rgba(245, 158, 11, 0.1); }
-            50% { box-shadow: 0 0 30px rgba(245, 158, 11, 0.5), inset 0 0 25px rgba(245, 158, 11, 0.2); }
+        .animate-fade {
+            animation: fade-in 0.16s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
-        @keyframes cosmic-glow {
-            0%, 100% { box-shadow: 0 0 20px rgba(168, 85, 247, 0.4), inset 0 0 20px rgba(236, 72, 153, 0.2); }
-            50% { box-shadow: 0 0 40px rgba(236, 72, 153, 0.6), inset 0 0 30px rgba(168, 85, 247, 0.35); }
-        }
-        .animate-pop {
-            animation: pop-in 0.14s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        .animate-tick {
+            animation: number-tick 0.09s ease-out forwards;
         }
         .animate-float {
-            animation: float-up 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-        .streak-fire {
-            animation: streak-glow 2s infinite ease-in-out;
-        }
-        .streak-cosmic {
-            animation: cosmic-glow 1.5s infinite ease-in-out;
+            animation: float-up-subtle 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
         /* Hide number input spinners */
         input[type=number]::-webkit-inner-spin-button, 
@@ -74,396 +80,357 @@
         input[type=number] {
             -moz-appearance: textfield;
         }
-        /* Custom scrollbar */
+        /* Minimalist scrollbar */
         ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+            width: 5px;
+            height: 5px;
         }
         ::-webkit-scrollbar-track {
-            background: rgba(15, 23, 42, 0.4);
+            background: transparent;
         }
         ::-webkit-scrollbar-thumb {
-            background: rgba(100, 116, 139, 0.4);
+            background: rgba(113, 113, 122, 0.25);
             border-radius: 9999px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: rgba(100, 116, 139, 0.7);
+            background: rgba(113, 113, 122, 0.5);
         }
     </style>
 </head>
-<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen flex flex-col font-sans selection:bg-indigo-500 selection:text-white transition-colors duration-200 overflow-x-hidden">
+<body class="bg-[#F9F9F8] dark:bg-[#121212] text-[#18181B] dark:text-[#F4F4F5] min-h-screen flex flex-col font-sans selection:bg-[#18181B] selection:text-[#F9F9F8] dark:selection:bg-[#F4F4F5] dark:selection:text-[#121212] transition-colors duration-200 overflow-x-hidden antialiased">
 
-    <!-- Top Navigation Bar -->
-    <header class="w-full border-b border-slate-200/80 dark:border-slate-800/80 bg-white/70 dark:bg-slate-900/70 backdrop-blur-md sticky top-0 z-30">
-        <div class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+    <!-- Minimalist Top Header -->
+    <header class="w-full border-b border-[#E4E4E7] dark:border-[#27272A] bg-[#F9F9F8]/90 dark:bg-[#121212]/90 backdrop-blur-sm sticky top-0 z-30">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
             <!-- Brand -->
             <div class="flex items-center space-x-3 cursor-pointer group" onclick="app.showView('setup')">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center text-white shadow-lg shadow-indigo-500/25 group-hover:scale-105 transition-transform">
-                    <i data-lucide="zap" class="w-5 h-5 fill-current"></i>
+                <div class="w-7 h-7 rounded-md bg-[#18181B] dark:bg-[#F4F4F5] text-[#F9F9F8] dark:text-[#121212] flex items-center justify-center font-mono font-bold text-sm tracking-tighter transition-transform group-hover:scale-105">
+                    ZP
                 </div>
-                <div>
-                    <div class="flex items-center space-x-2">
-                        <span class="font-extrabold text-lg tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400">ZetaPulse</span>
-                        <span class="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full bg-indigo-100 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800/60 font-semibold">PRO</span>
-                    </div>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 hidden sm:block">Speed Arithmetic & Mental Math Trainer</p>
+                <div class="flex items-baseline space-x-2.5">
+                    <span class="font-semibold text-base tracking-tight text-[#18181B] dark:text-[#F4F4F5]">zetapulse</span>
+                    <span class="text-[11px] font-mono text-[#71717A] hidden sm:inline">arithmetic trainer</span>
                 </div>
             </div>
 
-            <!-- Quick Controls & High Score Pill -->
-            <div class="flex items-center space-x-2 sm:space-x-3">
+            <!-- Controls & Personal Best Pill -->
+            <div class="flex items-center space-x-2">
                 <!-- Current Mode Best Score Badge -->
-                <div id="nav-best-badge" class="flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 text-xs font-mono">
-                    <i data-lucide="trophy" class="w-3.5 h-3.5"></i>
-                    <span id="nav-best-label">120s Best:</span>
-                    <span id="nav-best-val" class="font-bold">0</span>
+                <div id="nav-best-badge" class="flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-[#F2F2EE] dark:bg-[#18181B] border border-[#E4E4E7] dark:border-[#27272A] text-[#18181B] dark:text-[#F4F4F5] text-xs font-mono">
+                    <span class="w-1.5 h-1.5 rounded-full bg-[#D95D39]"></span>
+                    <span id="nav-best-label" class="text-[#71717A]">120s PB:</span>
+                    <span id="nav-best-val" class="font-semibold">0</span>
                 </div>
 
                 <!-- Sound Toggle -->
-                <button id="btn-sound" onclick="app.toggleSound()" title="Toggle Sound Effects" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/90 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-colors border border-slate-200/60 dark:border-slate-700/60">
+                <button id="btn-sound" onclick="app.toggleSound()" title="Toggle Tactile Audio" class="p-2 rounded-lg bg-[#F2F2EE] dark:bg-[#18181B] hover:bg-[#E4E4E7]/70 dark:hover:bg-[#27272A] text-[#71717A] hover:text-[#18181B] dark:hover:text-[#F4F4F5] transition-colors border border-[#E4E4E7] dark:border-[#27272A]">
                     <i id="icon-sound" data-lucide="volume-2" class="w-4 h-4"></i>
                 </button>
 
-                <!-- Theme Toggle -->
-                <button id="btn-theme" onclick="app.toggleTheme()" title="Toggle Light/Dark Theme" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/90 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-colors border border-slate-200/60 dark:border-slate-700/60">
-                    <i id="icon-theme" data-lucide="sun" class="w-4 h-4"></i>
+                <!-- Theme Toggle (Alabaster Paper / Matte Obsidian) -->
+                <button id="btn-theme" onclick="app.toggleTheme()" title="Switch Paper / Obsidian Theme" class="p-2 rounded-lg bg-[#F2F2EE] dark:bg-[#18181B] hover:bg-[#E4E4E7]/70 dark:hover:bg-[#27272A] text-[#71717A] hover:text-[#18181B] dark:hover:text-[#F4F4F5] transition-colors border border-[#E4E4E7] dark:border-[#27272A]">
+                    <i id="icon-theme" data-lucide="moon" class="w-4 h-4"></i>
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- Main Content Area -->
-    <main class="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8 flex flex-col justify-center">
+    <!-- Main Content Container -->
+    <main class="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 py-8 sm:py-10 flex flex-col justify-center">
 
         <!-- ==================== VIEW 1: SETUP & CONFIGURATION ==================== -->
-        <section id="view-setup" class="space-y-6 animate-pop">
-            <!-- Hero Banner -->
-            <div class="relative rounded-3xl bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white p-6 sm:p-8 shadow-xl border border-indigo-500/20 overflow-hidden">
-                <div class="absolute -right-12 -top-12 w-56 h-56 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none"></div>
-                <div class="absolute -left-12 -bottom-12 w-56 h-56 bg-purple-500/20 rounded-full blur-3xl pointer-events-none"></div>
-                
-                <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-                    <div class="space-y-2 max-w-xl">
-                        <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-400/30 text-indigo-300 text-xs font-medium">
-                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-                            <span>Instant Auto-Advance Validation</span>
-                        </div>
-                        <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight">Train Your Mental Math Reflexes</h1>
-                        <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
-                            Inspired by the classic Zetamac arithmetic drill. Type the exact answer and advance immediately without hitting Enter. Track your pace, combos, and slowest problems.
-                        </p>
+        <section id="view-setup" class="space-y-8 animate-fade">
+            
+            <!-- Swiss Editorial Header Section -->
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-[#E4E4E7] dark:border-[#27272A]">
+                <div class="space-y-2 max-w-xl">
+                    <div class="inline-flex items-center space-x-2 text-[11px] font-mono uppercase tracking-widest text-[#71717A]">
+                        <span class="w-1.5 h-1.5 rounded-full bg-[#3F6253] dark:bg-[#659B83]"></span>
+                        <span>Zero-Latency Keystroke Validation</span>
                     </div>
-                    <div class="flex flex-col sm:flex-row md:flex-col gap-3 shrink-0">
-                        <button onclick="app.startGame()" class="px-7 py-4 rounded-2xl bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-indigo-400 hover:via-purple-400 hover:to-pink-400 text-white font-bold text-base shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:scale-[1.02] active:scale-[0.99] transition-all flex items-center justify-center space-x-2.5">
-                            <i data-lucide="play" class="w-5 h-5 fill-current"></i>
-                            <span>Start Drill Now</span>
-                        </button>
-                        <button onclick="app.resetToZetamacDefaults()" class="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-slate-200 text-xs font-semibold backdrop-blur-sm border border-white/10 transition-all flex items-center justify-center space-x-1.5">
-                            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
-                            <span>Restore Classic Zetamac Defaults</span>
-                        </button>
-                    </div>
+                    <h1 class="text-2xl sm:text-3xl font-semibold tracking-tight text-[#18181B] dark:text-[#F4F4F5]">
+                        Speed Arithmetic Drill
+                    </h1>
+                    <p class="text-[#71717A] text-sm leading-relaxed">
+                        Standard Zetamac mechanics in a distraction-free environment. Answers validate automatically on the final digit—no Enter key required.
+                    </p>
+                </div>
+
+                <div class="flex flex-wrap sm:flex-nowrap items-center gap-2.5 shrink-0">
+                    <button onclick="app.resetToZetamacDefaults()" class="px-4 py-3 rounded-xl bg-transparent hover:bg-[#F2F2EE] dark:hover:bg-[#18181B] text-[#71717A] hover:text-[#18181B] dark:hover:text-[#F4F4F5] text-xs font-mono border border-[#E4E4E7] dark:border-[#27272A] transition-colors flex items-center justify-center space-x-1.5">
+                        <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                        <span>Reset Defaults</span>
+                    </button>
+                    <button onclick="app.startGame()" class="px-6 py-3 rounded-xl bg-[#18181B] dark:bg-[#F4F4F5] hover:opacity-90 text-[#F9F9F8] dark:text-[#121212] font-medium text-sm transition-all flex items-center justify-center space-x-2">
+                        <span>Start Session</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </button>
                 </div>
             </div>
 
-            <!-- Configuration Grid -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Configuration Layout -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 
-                <!-- Left Column: Operations & Number Ranges (2 cols wide on desktop) -->
-                <div class="lg:col-span-2 bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-sm border border-slate-200/80 dark:border-slate-800/80 space-y-5">
-                    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-4">
-                        <div class="flex items-center space-x-2.5">
-                            <div class="p-2 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
-                                <i data-lucide="sliders-horizontal" class="w-5 h-5"></i>
-                            </div>
-                            <div>
-                                <h2 class="font-bold text-base sm:text-lg">Operations & Number Ranges</h2>
-                                <p class="text-xs text-slate-500 dark:text-slate-400">Customize bounds for each arithmetic operation</p>
-                            </div>
+                <!-- Left Column: Operations & Bounds (8 cols) -->
+                <div class="lg:col-span-8 space-y-5">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-xs font-mono uppercase tracking-wider text-[#71717A]">01 / Operations & Bounds</span>
                         </div>
-                        <span id="preset-indicator" class="text-xs font-mono px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-medium">
-                            Classic Zetamac Preset
+                        <span id="preset-indicator" class="text-[11px] font-mono px-2.5 py-0.5 rounded-md bg-[#F2F2EE] dark:bg-[#18181B] text-[#18181B] dark:text-[#F4F4F5] border border-[#E4E4E7] dark:border-[#27272A]">
+                            Classic Zetamac
                         </span>
                     </div>
 
-                    <!-- Error message if user unchecks all operations -->
-                    <div id="setup-error" class="hidden p-3.5 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-400 text-xs font-medium flex items-center space-x-2">
+                    <!-- Validation Alert -->
+                    <div id="setup-error" class="hidden p-3.5 rounded-xl bg-[#D95D39]/10 border border-[#D95D39]/30 text-[#D95D39] text-xs font-mono flex items-center space-x-2">
                         <i data-lucide="alert-circle" class="w-4 h-4 shrink-0"></i>
-                        <span id="setup-error-text">Please enable at least one arithmetic operation to start.</span>
+                        <span id="setup-error-text">Select at least one arithmetic operation to begin.</span>
                     </div>
 
-                    <div class="space-y-4">
+                    <!-- Clean 1px Bordered Table-Style List -->
+                    <div class="rounded-2xl bg-white dark:bg-[#18181B] border border-[#E4E4E7] dark:border-[#27272A] divide-y divide-[#E4E4E7] dark:divide-[#27272A]">
+                        
                         <!-- ADDITION -->
-                        <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/70 dark:border-slate-700/60 transition-all">
-                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                                <label class="flex items-center space-x-3 cursor-pointer select-none">
-                                    <input type="checkbox" id="op-add" checked onchange="app.onConfigChange()" class="w-5 h-5 rounded-lg text-indigo-600 focus:ring-indigo-500 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700">
-                                    <div>
-                                        <div class="flex items-center space-x-2">
-                                            <span class="w-6 h-6 rounded-md bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-mono font-bold text-sm flex items-center justify-center">+</span>
-                                            <span class="font-bold text-sm sm:text-base">Addition</span>
-                                        </div>
-                                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Range: (A₁ to A₂) + (B₁ to B₂)</p>
+                        <div class="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <label class="flex items-center space-x-3.5 cursor-pointer select-none">
+                                <input type="checkbox" id="op-add" checked onchange="app.onConfigChange()" class="w-4 h-4 rounded accent-[#18181B] dark:accent-[#F4F4F5] border-[#E4E4E7] dark:border-[#27272A]">
+                                <div>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="font-mono text-sm font-semibold text-[#71717A]">+</span>
+                                        <span class="font-medium text-sm">Addition</span>
                                     </div>
-                                </label>
+                                    <p class="text-xs text-[#71717A] mt-0.5">(A₁ to A₂) + (B₁ to B₂)</p>
+                                </div>
+                            </label>
 
-                                <div class="flex flex-wrap items-center gap-2 font-mono text-xs sm:text-sm">
-                                    <div class="flex items-center space-x-1.5 bg-white dark:bg-slate-900 px-2.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700">
-                                        <input type="number" id="add-a1" value="2" min="0" max="9999" onchange="app.onConfigChange()" class="w-14 text-center bg-transparent font-bold focus:outline-none text-indigo-600 dark:text-indigo-400">
-                                        <span class="text-slate-400">to</span>
-                                        <input type="number" id="add-a2" value="100" min="0" max="9999" onchange="app.onConfigChange()" class="w-14 text-center bg-transparent font-bold focus:outline-none text-indigo-600 dark:text-indigo-400">
-                                    </div>
-                                    <span class="text-slate-400 font-bold">+</span>
-                                    <div class="flex items-center space-x-1.5 bg-white dark:bg-slate-900 px-2.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700">
-                                        <input type="number" id="add-b1" value="2" min="0" max="9999" onchange="app.onConfigChange()" class="w-14 text-center bg-transparent font-bold focus:outline-none text-indigo-600 dark:text-indigo-400">
-                                        <span class="text-slate-400">to</span>
-                                        <input type="number" id="add-b2" value="100" min="0" max="9999" onchange="app.onConfigChange()" class="w-14 text-center bg-transparent font-bold focus:outline-none text-indigo-600 dark:text-indigo-400">
-                                    </div>
+                            <div class="flex flex-wrap items-center gap-1.5 font-mono text-xs">
+                                <div class="flex items-center bg-[#F9F9F8] dark:bg-[#121212] px-2.5 py-1.5 rounded-lg border border-[#E4E4E7] dark:border-[#27272A]">
+                                    <input type="number" id="add-a1" value="2" min="0" max="9999" onchange="app.onConfigChange()" class="w-12 text-center bg-transparent font-medium focus:outline-none">
+                                    <span class="text-[#71717A] px-1">..</span>
+                                    <input type="number" id="add-a2" value="100" min="0" max="9999" onchange="app.onConfigChange()" class="w-12 text-center bg-transparent font-medium focus:outline-none">
+                                </div>
+                                <span class="text-[#71717A] px-0.5">+</span>
+                                <div class="flex items-center bg-[#F9F9F8] dark:bg-[#121212] px-2.5 py-1.5 rounded-lg border border-[#E4E4E7] dark:border-[#27272A]">
+                                    <input type="number" id="add-b1" value="2" min="0" max="9999" onchange="app.onConfigChange()" class="w-12 text-center bg-transparent font-medium focus:outline-none">
+                                    <span class="text-[#71717A] px-1">..</span>
+                                    <input type="number" id="add-b2" value="100" min="0" max="9999" onchange="app.onConfigChange()" class="w-12 text-center bg-transparent font-medium focus:outline-none">
                                 </div>
                             </div>
                         </div>
 
                         <!-- SUBTRACTION -->
-                        <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/70 dark:border-slate-700/60 transition-all">
-                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                                <label class="flex items-center space-x-3 cursor-pointer select-none">
-                                    <input type="checkbox" id="op-sub" checked onchange="app.onConfigChange()" class="w-5 h-5 rounded-lg text-indigo-600 focus:ring-indigo-500 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700">
-                                    <div>
-                                        <div class="flex items-center space-x-2">
-                                            <span class="w-6 h-6 rounded-md bg-sky-500/15 text-sky-600 dark:text-sky-400 font-mono font-bold text-sm flex items-center justify-center">−</span>
-                                            <span class="font-bold text-sm sm:text-base">Subtraction</span>
-                                        </div>
-                                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Addition problems in reverse (positive results)</p>
+                        <div class="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <label class="flex items-center space-x-3.5 cursor-pointer select-none">
+                                <input type="checkbox" id="op-sub" checked onchange="app.onConfigChange()" class="w-4 h-4 rounded accent-[#18181B] dark:accent-[#F4F4F5] border-[#E4E4E7] dark:border-[#27272A]">
+                                <div>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="font-mono text-sm font-semibold text-[#71717A]">−</span>
+                                        <span class="font-medium text-sm">Subtraction</span>
                                     </div>
-                                </label>
+                                    <p class="text-xs text-[#71717A] mt-0.5">Addition in reverse (positive integers)</p>
+                                </div>
+                            </label>
 
-                                <div class="flex flex-wrap items-center gap-2 font-mono text-xs sm:text-sm">
-                                    <div class="flex items-center space-x-1.5 bg-white dark:bg-slate-900 px-2.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700">
-                                        <input type="number" id="sub-a1" value="2" min="0" max="9999" onchange="app.onConfigChange()" class="w-14 text-center bg-transparent font-bold focus:outline-none text-indigo-600 dark:text-indigo-400">
-                                        <span class="text-slate-400">to</span>
-                                        <input type="number" id="sub-a2" value="100" min="0" max="9999" onchange="app.onConfigChange()" class="w-14 text-center bg-transparent font-bold focus:outline-none text-indigo-600 dark:text-indigo-400">
-                                    </div>
-                                    <span class="text-slate-400 font-bold">−</span>
-                                    <div class="flex items-center space-x-1.5 bg-white dark:bg-slate-900 px-2.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700">
-                                        <input type="number" id="sub-b1" value="2" min="0" max="9999" onchange="app.onConfigChange()" class="w-14 text-center bg-transparent font-bold focus:outline-none text-indigo-600 dark:text-indigo-400">
-                                        <span class="text-slate-400">to</span>
-                                        <input type="number" id="sub-b2" value="100" min="0" max="9999" onchange="app.onConfigChange()" class="w-14 text-center bg-transparent font-bold focus:outline-none text-indigo-600 dark:text-indigo-400">
-                                    </div>
+                            <div class="flex flex-wrap items-center gap-1.5 font-mono text-xs">
+                                <div class="flex items-center bg-[#F9F9F8] dark:bg-[#121212] px-2.5 py-1.5 rounded-lg border border-[#E4E4E7] dark:border-[#27272A]">
+                                    <input type="number" id="sub-a1" value="2" min="0" max="9999" onchange="app.onConfigChange()" class="w-12 text-center bg-transparent font-medium focus:outline-none">
+                                    <span class="text-[#71717A] px-1">..</span>
+                                    <input type="number" id="sub-a2" value="100" min="0" max="9999" onchange="app.onConfigChange()" class="w-12 text-center bg-transparent font-medium focus:outline-none">
+                                </div>
+                                <span class="text-[#71717A] px-0.5">−</span>
+                                <div class="flex items-center bg-[#F9F9F8] dark:bg-[#121212] px-2.5 py-1.5 rounded-lg border border-[#E4E4E7] dark:border-[#27272A]">
+                                    <input type="number" id="sub-b1" value="2" min="0" max="9999" onchange="app.onConfigChange()" class="w-12 text-center bg-transparent font-medium focus:outline-none">
+                                    <span class="text-[#71717A] px-1">..</span>
+                                    <input type="number" id="sub-b2" value="100" min="0" max="9999" onchange="app.onConfigChange()" class="w-12 text-center bg-transparent font-medium focus:outline-none">
                                 </div>
                             </div>
                         </div>
 
                         <!-- MULTIPLICATION -->
-                        <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/70 dark:border-slate-700/60 transition-all">
-                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                                <label class="flex items-center space-x-3 cursor-pointer select-none">
-                                    <input type="checkbox" id="op-mul" checked onchange="app.onConfigChange()" class="w-5 h-5 rounded-lg text-indigo-600 focus:ring-indigo-500 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700">
-                                    <div>
-                                        <div class="flex items-center space-x-2">
-                                            <span class="w-6 h-6 rounded-md bg-amber-500/15 text-amber-600 dark:text-amber-400 font-mono font-bold text-sm flex items-center justify-center">×</span>
-                                            <span class="font-bold text-sm sm:text-base">Multiplication</span>
-                                        </div>
-                                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Range: (A₁ to A₂) × (B₁ to B₂)</p>
+                        <div class="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <label class="flex items-center space-x-3.5 cursor-pointer select-none">
+                                <input type="checkbox" id="op-mul" checked onchange="app.onConfigChange()" class="w-4 h-4 rounded accent-[#18181B] dark:accent-[#F4F4F5] border-[#E4E4E7] dark:border-[#27272A]">
+                                <div>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="font-mono text-sm font-semibold text-[#71717A]">×</span>
+                                        <span class="font-medium text-sm">Multiplication</span>
                                     </div>
-                                </label>
+                                    <p class="text-xs text-[#71717A] mt-0.5">(A₁ to A₂) × (B₁ to B₂)</p>
+                                </div>
+                            </label>
 
-                                <div class="flex flex-wrap items-center gap-2 font-mono text-xs sm:text-sm">
-                                    <div class="flex items-center space-x-1.5 bg-white dark:bg-slate-900 px-2.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700">
-                                        <input type="number" id="mul-a1" value="2" min="0" max="9999" onchange="app.onConfigChange()" class="w-14 text-center bg-transparent font-bold focus:outline-none text-indigo-600 dark:text-indigo-400">
-                                        <span class="text-slate-400">to</span>
-                                        <input type="number" id="mul-a2" value="12" min="0" max="9999" onchange="app.onConfigChange()" class="w-14 text-center bg-transparent font-bold focus:outline-none text-indigo-600 dark:text-indigo-400">
-                                    </div>
-                                    <span class="text-slate-400 font-bold">×</span>
-                                    <div class="flex items-center space-x-1.5 bg-white dark:bg-slate-900 px-2.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700">
-                                        <input type="number" id="mul-b1" value="2" min="0" max="9999" onchange="app.onConfigChange()" class="w-14 text-center bg-transparent font-bold focus:outline-none text-indigo-600 dark:text-indigo-400">
-                                        <span class="text-slate-400">to</span>
-                                        <input type="number" id="mul-b2" value="100" min="0" max="9999" onchange="app.onConfigChange()" class="w-14 text-center bg-transparent font-bold focus:outline-none text-indigo-600 dark:text-indigo-400">
-                                    </div>
+                            <div class="flex flex-wrap items-center gap-1.5 font-mono text-xs">
+                                <div class="flex items-center bg-[#F9F9F8] dark:bg-[#121212] px-2.5 py-1.5 rounded-lg border border-[#E4E4E7] dark:border-[#27272A]">
+                                    <input type="number" id="mul-a1" value="2" min="0" max="9999" onchange="app.onConfigChange()" class="w-12 text-center bg-transparent font-medium focus:outline-none">
+                                    <span class="text-[#71717A] px-1">..</span>
+                                    <input type="number" id="mul-a2" value="12" min="0" max="9999" onchange="app.onConfigChange()" class="w-12 text-center bg-transparent font-medium focus:outline-none">
+                                </div>
+                                <span class="text-[#71717A] px-0.5">×</span>
+                                <div class="flex items-center bg-[#F9F9F8] dark:bg-[#121212] px-2.5 py-1.5 rounded-lg border border-[#E4E4E7] dark:border-[#27272A]">
+                                    <input type="number" id="mul-b1" value="2" min="0" max="9999" onchange="app.onConfigChange()" class="w-12 text-center bg-transparent font-medium focus:outline-none">
+                                    <span class="text-[#71717A] px-1">..</span>
+                                    <input type="number" id="mul-b2" value="100" min="0" max="9999" onchange="app.onConfigChange()" class="w-12 text-center bg-transparent font-medium focus:outline-none">
                                 </div>
                             </div>
                         </div>
 
                         <!-- DIVISION -->
-                        <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/70 dark:border-slate-700/60 transition-all">
-                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                                <label class="flex items-center space-x-3 cursor-pointer select-none">
-                                    <input type="checkbox" id="op-div" checked onchange="app.onConfigChange()" class="w-5 h-5 rounded-lg text-indigo-600 focus:ring-indigo-500 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700">
-                                    <div>
-                                        <div class="flex items-center space-x-2">
-                                            <span class="w-6 h-6 rounded-md bg-rose-500/15 text-rose-600 dark:text-rose-400 font-mono font-bold text-sm flex items-center justify-center">÷</span>
-                                            <span class="font-bold text-sm sm:text-base">Division</span>
-                                        </div>
-                                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Multiplication problems in reverse (exact integers)</p>
+                        <div class="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <label class="flex items-center space-x-3.5 cursor-pointer select-none">
+                                <input type="checkbox" id="op-div" checked onchange="app.onConfigChange()" class="w-4 h-4 rounded accent-[#18181B] dark:accent-[#F4F4F5] border-[#E4E4E7] dark:border-[#27272A]">
+                                <div>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="font-mono text-sm font-semibold text-[#71717A]">÷</span>
+                                        <span class="font-medium text-sm">Division</span>
                                     </div>
-                                </label>
+                                    <p class="text-xs text-[#71717A] mt-0.5">Multiplication in reverse (exact quotients)</p>
+                                </div>
+                            </label>
 
-                                <div class="flex flex-wrap items-center gap-2 font-mono text-xs sm:text-sm">
-                                    <div class="flex items-center space-x-1.5 bg-white dark:bg-slate-900 px-2.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700">
-                                        <input type="number" id="div-a1" value="2" min="1" max="9999" onchange="app.onConfigChange()" class="w-14 text-center bg-transparent font-bold focus:outline-none text-indigo-600 dark:text-indigo-400">
-                                        <span class="text-slate-400">to</span>
-                                        <input type="number" id="div-a2" value="12" min="1" max="9999" onchange="app.onConfigChange()" class="w-14 text-center bg-transparent font-bold focus:outline-none text-indigo-600 dark:text-indigo-400">
-                                    </div>
-                                    <span class="text-slate-400 font-bold">×</span>
-                                    <div class="flex items-center space-x-1.5 bg-white dark:bg-slate-900 px-2.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700">
-                                        <input type="number" id="div-b1" value="2" min="1" max="9999" onchange="app.onConfigChange()" class="w-14 text-center bg-transparent font-bold focus:outline-none text-indigo-600 dark:text-indigo-400">
-                                        <span class="text-slate-400">to</span>
-                                        <input type="number" id="div-b2" value="100" min="1" max="9999" onchange="app.onConfigChange()" class="w-14 text-center bg-transparent font-bold focus:outline-none text-indigo-600 dark:text-indigo-400">
-                                    </div>
+                            <div class="flex flex-wrap items-center gap-1.5 font-mono text-xs">
+                                <div class="flex items-center bg-[#F9F9F8] dark:bg-[#121212] px-2.5 py-1.5 rounded-lg border border-[#E4E4E7] dark:border-[#27272A]">
+                                    <input type="number" id="div-a1" value="2" min="1" max="9999" onchange="app.onConfigChange()" class="w-12 text-center bg-transparent font-medium focus:outline-none">
+                                    <span class="text-[#71717A] px-1">..</span>
+                                    <input type="number" id="div-a2" value="12" min="1" max="9999" onchange="app.onConfigChange()" class="w-12 text-center bg-transparent font-medium focus:outline-none">
+                                </div>
+                                <span class="text-[#71717A] px-0.5">×</span>
+                                <div class="flex items-center bg-[#F9F9F8] dark:bg-[#121212] px-2.5 py-1.5 rounded-lg border border-[#E4E4E7] dark:border-[#27272A]">
+                                    <input type="number" id="div-b1" value="2" min="1" max="9999" onchange="app.onConfigChange()" class="w-12 text-center bg-transparent font-medium focus:outline-none">
+                                    <span class="text-[#71717A] px-1">..</span>
+                                    <input type="number" id="div-b2" value="100" min="1" max="9999" onchange="app.onConfigChange()" class="w-12 text-center bg-transparent font-medium focus:outline-none">
                                 </div>
                             </div>
                         </div>
+
                     </div>
 
-                    <!-- Quick Range Presets -->
-                    <div class="pt-2 flex flex-wrap items-center justify-between gap-2 text-xs">
-                        <span class="text-slate-500 dark:text-slate-400 font-medium">Quick Difficulty Presets:</span>
-                        <div class="flex flex-wrap gap-2">
-                            <button onclick="app.applyPreset('warmup')" class="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-indigo-500/10 hover:text-indigo-500 font-medium transition-colors">
-                                Warmup (2–20)
+                    <!-- Quick Presets Bar -->
+                    <div class="flex flex-wrap items-center justify-between gap-2 pt-1 text-xs">
+                        <span class="font-mono text-[#71717A]">Presets:</span>
+                        <div class="flex flex-wrap gap-2 font-mono">
+                            <button onclick="app.applyPreset('warmup')" class="px-3 py-1.5 rounded-lg bg-white dark:bg-[#18181B] hover:bg-[#F2F2EE] dark:hover:bg-[#27272A] border border-[#E4E4E7] dark:border-[#27272A] text-[#71717A] hover:text-[#18181B] dark:hover:text-[#F4F4F5] transition-colors">
+                                Warmup [2..25]
                             </button>
-                            <button onclick="app.applyPreset('classic')" class="px-3 py-1.5 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-semibold border border-indigo-500/20 transition-colors">
-                                Classic Zetamac (Default)
+                            <button onclick="app.applyPreset('classic')" class="px-3 py-1.5 rounded-lg bg-white dark:bg-[#18181B] hover:bg-[#F2F2EE] dark:hover:bg-[#27272A] border border-[#E4E4E7] dark:border-[#27272A] text-[#18181B] dark:text-[#F4F4F5] font-medium transition-colors">
+                                Classic Zetamac
                             </button>
-                            <button onclick="app.applyPreset('quant')" class="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-purple-500/10 hover:text-purple-500 font-medium transition-colors">
-                                Quant Interview (2–200 / 2–25)
+                            <button onclick="app.applyPreset('quant')" class="px-3 py-1.5 rounded-lg bg-white dark:bg-[#18181B] hover:bg-[#F2F2EE] dark:hover:bg-[#27272A] border border-[#E4E4E7] dark:border-[#27272A] text-[#71717A] hover:text-[#18181B] dark:hover:text-[#F4F4F5] transition-colors">
+                                Quant [2..250]
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <!-- Right Column: Duration & High Scores -->
-                <div class="space-y-6 flex flex-col justify-between">
-                    <!-- Duration Selector Card -->
-                    <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-sm border border-slate-200/80 dark:border-slate-800/80 space-y-4">
-                        <div class="flex items-center space-x-2.5">
-                            <div class="p-2 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400">
-                                <i data-lucide="timer" class="w-5 h-5"></i>
-                            </div>
-                            <div>
-                                <h2 class="font-bold text-base sm:text-lg">Game Duration</h2>
-                                <p class="text-xs text-slate-500 dark:text-slate-400">120 seconds is standard Zetamac</p>
-                            </div>
+                <!-- Right Column: Duration & Personal Records (4 cols) -->
+                <div class="lg:col-span-4 space-y-8 flex flex-col justify-between">
+                    
+                    <!-- Duration Selector -->
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-mono uppercase tracking-wider text-[#71717A]">02 / Duration</span>
+                            <span class="text-[11px] font-mono text-[#71717A]">120s standard</span>
                         </div>
 
-                        <div class="grid grid-cols-2 gap-3" id="duration-grid">
-                            <button data-dur="30" onclick="app.setDuration(30)" class="dur-btn p-3.5 rounded-2xl border text-left transition-all flex flex-col justify-between">
-                                <span class="text-xs text-slate-500 dark:text-slate-400 font-medium">Blitz</span>
-                                <span class="font-mono text-xl font-extrabold mt-1">30s</span>
+                        <div class="grid grid-cols-2 gap-2.5" id="duration-grid">
+                            <button data-dur="30" onclick="app.setDuration(30)" class="dur-btn p-3.5 rounded-xl border text-left transition-all flex flex-col justify-between">
+                                <span class="text-[11px] font-mono text-[#71717A]">Blitz</span>
+                                <span class="font-mono text-xl font-semibold mt-1">30s</span>
                             </button>
-                            <button data-dur="60" onclick="app.setDuration(60)" class="dur-btn p-3.5 rounded-2xl border text-left transition-all flex flex-col justify-between">
-                                <span class="text-xs text-slate-500 dark:text-slate-400 font-medium">Sprint</span>
-                                <span class="font-mono text-xl font-extrabold mt-1">60s</span>
+                            <button data-dur="60" onclick="app.setDuration(60)" class="dur-btn p-3.5 rounded-xl border text-left transition-all flex flex-col justify-between">
+                                <span class="text-[11px] font-mono text-[#71717A]">Sprint</span>
+                                <span class="font-mono text-xl font-semibold mt-1">60s</span>
                             </button>
-                            <button data-dur="120" onclick="app.setDuration(120)" class="dur-btn p-3.5 rounded-2xl border text-left transition-all flex flex-col justify-between">
-                                <div class="flex items-center justify-between w-full">
-                                    <span class="text-xs font-semibold">Standard</span>
-                                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-indigo-500 text-white font-mono">CLASSIC</span>
-                                </div>
-                                <span class="font-mono text-xl font-extrabold mt-1">120s</span>
+                            <button data-dur="120" onclick="app.setDuration(120)" class="dur-btn p-3.5 rounded-xl border text-left transition-all flex flex-col justify-between">
+                                <span class="text-[11px] font-mono text-[#71717A]">Standard</span>
+                                <span class="font-mono text-xl font-semibold mt-1">120s</span>
                             </button>
-                            <button data-dur="300" onclick="app.setDuration(300)" class="dur-btn p-3.5 rounded-2xl border text-left transition-all flex flex-col justify-between">
-                                <span class="text-xs text-slate-500 dark:text-slate-400 font-medium">Marathon</span>
-                                <span class="font-mono text-xl font-extrabold mt-1">300s</span>
+                            <button data-dur="300" onclick="app.setDuration(300)" class="dur-btn p-3.5 rounded-xl border text-left transition-all flex flex-col justify-between">
+                                <span class="text-[11px] font-mono text-[#71717A]">Marathon</span>
+                                <span class="font-mono text-xl font-semibold mt-1">300s</span>
                             </button>
                         </div>
                     </div>
 
-                    <!-- Personal Records Card -->
-                    <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-sm border border-slate-200/80 dark:border-slate-800/80 space-y-4 flex-1 flex flex-col justify-between">
-                        <div>
-                            <div class="flex items-center justify-between mb-4">
-                                <div class="flex items-center space-x-2.5">
-                                    <div class="p-2 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400">
-                                        <i data-lucide="award" class="w-5 h-5"></i>
-                                    </div>
-                                    <div>
-                                        <h2 class="font-bold text-base sm:text-lg">Personal Bests</h2>
-                                        <p class="text-xs text-slate-500 dark:text-slate-400">Saved locally by duration</p>
-                                    </div>
-                                </div>
-                                <button onclick="app.clearHighScores()" title="Reset High Scores" class="text-xs text-slate-400 hover:text-rose-500 transition-colors">
-                                    Reset
-                                </button>
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-2.5" id="highscores-grid">
-                                <!-- Populated via JS -->
-                            </div>
+                    <!-- Personal Bests -->
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-mono uppercase tracking-wider text-[#71717A]">03 / Personal Bests</span>
+                            <button onclick="app.clearHighScores()" class="text-[11px] font-mono text-[#71717A] hover:text-[#D95D39] transition-colors">
+                                Clear
+                            </button>
                         </div>
 
-                        <div class="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-                            <span>Keyboard Shortcuts:</span>
-                            <span class="font-mono bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-lg">Tab / Esc = Restart</span>
+                        <div class="grid grid-cols-2 gap-2.5" id="highscores-grid">
+                            <!-- Populated via JS -->
                         </div>
                     </div>
+
                 </div>
             </div>
         </section>
 
         <!-- ==================== VIEW 2: ACTIVE GAME ARENA ==================== -->
-        <section id="view-game" class="hidden flex-col items-center justify-center w-full max-w-3xl mx-auto space-y-5 animate-pop">
+        <section id="view-game" class="hidden flex-col items-center justify-center w-full max-w-2xl mx-auto my-auto space-y-10 py-6 animate-fade">
             
-            <!-- Top Live Telemetry Bar -->
-            <div class="w-full bg-white dark:bg-slate-900 rounded-3xl p-4 sm:p-5 shadow-sm border border-slate-200/80 dark:border-slate-800/80">
-                <div class="grid grid-cols-4 gap-2 sm:gap-4 items-center">
+            <!-- Minimalist Telemetry Strip -->
+            <div class="w-full space-y-3">
+                <div class="grid grid-cols-4 gap-4 pb-3 border-b border-[#E4E4E7] dark:border-[#27272A]">
                     <!-- Timer -->
-                    <div class="flex flex-col items-center sm:items-start p-2 rounded-2xl bg-slate-50 dark:bg-slate-800/60">
-                        <span class="text-[11px] uppercase tracking-wider font-semibold text-slate-400">Time Left</span>
-                        <div class="flex items-baseline space-x-1 mt-0.5">
-                            <span id="hud-timer" class="font-mono text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">120</span>
-                            <span class="font-mono text-xs text-slate-400">s</span>
+                    <div class="flex flex-col">
+                        <span class="text-[10px] font-mono uppercase tracking-widest text-[#71717A]">Time</span>
+                        <div class="flex items-baseline space-x-0.5 mt-1">
+                            <span id="hud-timer" class="font-mono text-2xl sm:text-3xl font-semibold text-[#18181B] dark:text-[#F4F4F5] tabular-nums">120</span>
+                            <span class="font-mono text-xs text-[#71717A]">s</span>
                         </div>
                     </div>
 
                     <!-- Score -->
-                    <div class="flex flex-col items-center sm:items-start p-2 rounded-2xl bg-slate-50 dark:bg-slate-800/60">
-                        <span class="text-[11px] uppercase tracking-wider font-semibold text-slate-400">Score</span>
-                        <div class="flex items-baseline space-x-1.5 mt-0.5 relative">
-                            <span id="hud-score" class="font-mono text-2xl sm:text-3xl font-extrabold text-indigo-600 dark:text-indigo-400">0</span>
+                    <div class="flex flex-col">
+                        <span class="text-[10px] font-mono uppercase tracking-widest text-[#71717A]">Score</span>
+                        <div class="flex items-baseline space-x-1.5 mt-1 relative">
+                            <span id="hud-score" class="font-mono text-2xl sm:text-3xl font-semibold text-[#18181B] dark:text-[#F4F4F5] tabular-nums">0</span>
                             <span id="score-float-container" class="relative"></span>
                         </div>
                     </div>
 
                     <!-- Live Pace (PPM) -->
-                    <div class="flex flex-col items-center sm:items-start p-2 rounded-2xl bg-slate-50 dark:bg-slate-800/60">
-                        <span class="text-[11px] uppercase tracking-wider font-semibold text-slate-400">Live Pace</span>
-                        <div class="flex items-baseline space-x-1 mt-0.5">
-                            <span id="hud-ppm" class="font-mono text-2xl sm:text-3xl font-extrabold text-emerald-600 dark:text-emerald-400">0.0</span>
-                            <span class="font-mono text-[11px] text-slate-400">PPM</span>
+                    <div class="flex flex-col">
+                        <span class="text-[10px] font-mono uppercase tracking-widest text-[#71717A]">Pace</span>
+                        <div class="flex items-baseline space-x-1 mt-1">
+                            <span id="hud-ppm" class="font-mono text-2xl sm:text-3xl font-semibold text-[#18181B] dark:text-[#F4F4F5] tabular-nums">0.0</span>
+                            <span class="font-mono text-[10px] text-[#71717A]">ppm</span>
                         </div>
                     </div>
 
                     <!-- Combo Streak -->
-                    <div class="flex flex-col items-center sm:items-start p-2 rounded-2xl bg-slate-50 dark:bg-slate-800/60">
-                        <span class="text-[11px] uppercase tracking-wider font-semibold text-slate-400">Streak</span>
-                        <div class="flex items-center space-x-1.5 mt-0.5">
-                            <span id="hud-streak" class="font-mono text-2xl sm:text-3xl font-extrabold text-amber-500">0</span>
-                            <span id="hud-streak-badge" class="hidden text-[10px] font-mono font-bold px-1.5 py-0.5 rounded-md bg-amber-500/20 text-amber-400 border border-amber-500/30">🔥</span>
+                    <div class="flex flex-col">
+                        <span class="text-[10px] font-mono uppercase tracking-widest text-[#71717A]">Streak</span>
+                        <div class="flex items-center space-x-2 mt-1">
+                            <span id="hud-streak" class="font-mono text-2xl sm:text-3xl font-semibold text-[#18181B] dark:text-[#F4F4F5] tabular-nums">0</span>
+                            <span id="hud-streak-badge" class="hidden text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#F2F2EE] dark:bg-[#1F1F23] text-[#3F6253] dark:text-[#659B83] border border-[#E4E4E7] dark:border-[#27272A]">x5</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Smooth Depleting Time Progress Bar -->
-                <div class="w-full h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden mt-4">
-                    <div id="hud-progress" class="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-emerald-400 transition-all duration-100 ease-linear" style="width: 100%"></div>
+                <!-- Hairline Progress Bar -->
+                <div class="w-full h-[2px] bg-[#E4E4E7] dark:bg-[#27272A] overflow-hidden">
+                    <div id="hud-progress" class="h-full bg-[#18181B] dark:bg-[#F4F4F5] transition-all duration-100 ease-linear" style="width: 100%"></div>
                 </div>
             </div>
 
-            <!-- Main Problem Stage Card -->
-            <div id="arena-card" class="w-full bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-12 shadow-lg border-2 border-slate-200/90 dark:border-slate-800 transition-all duration-300 flex flex-col items-center justify-center relative overflow-hidden">
+            <!-- Central Focus Equation Stage -->
+            <div id="arena-card" class="w-full py-10 sm:py-16 px-6 rounded-2xl bg-white dark:bg-[#18181B] border border-[#E4E4E7] dark:border-[#27272A] flex flex-col items-center justify-center transition-colors">
                 
-                <!-- Subtle background streak aura -->
-                <div id="streak-aura" class=" inset-0 pointer-events-none opacity-0 transition-opacity duration-500 bg-gradient-to-br from-amber-500/5 via-transparent to-purple-500/5"></div>
-
-                <!-- Operation Tag & Problem Counter -->
-                <div class="w-full flex items-center justify-between text-xs font-mono text-slate-400 mb-6">
-                    <span id="problem-op-tag" class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold">ADDITION</span>
-                    <span id="problem-projected" class="text-slate-400">Projected Final: <strong class="text-slate-700 dark:text-slate-200">0</strong></span>
+                <!-- Subtle Meta Row -->
+                <div class="w-full flex items-center justify-between text-[11px] font-mono text-[#71717A] mb-8 px-2">
+                    <span id="problem-op-tag" class="uppercase tracking-widest">ADDITION</span>
+                    <span id="problem-projected">Est. Final: <strong class="text-[#18181B] dark:text-[#F4F4F5] font-medium">0</strong></span>
                 </div>
 
-                <!-- Equation + Auto-Validating Input -->
-                <div id="problem-container" class="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 my-2 sm:my-6 w-full">
-                    <div id="problem-text" class="font-mono text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-slate-900 dark:text-white select-none text-center">
+                <!-- Equation + Minimalist Auto-Validating Input -->
+                <div id="problem-container" class="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 my-2 w-full">
+                    <div id="problem-text" class="font-mono text-4xl sm:text-6xl font-semibold tracking-tight text-[#18181B] dark:text-[#F4F4F5] select-none text-center tabular-nums">
                         24 + 67 =
                     </div>
                     <div class="relative flex items-center justify-center">
@@ -477,111 +444,111 @@
                             autocapitalize="off" 
                             spellcheck="false"
                             placeholder="?"
-                            class="w-36 sm:w-44 md:w-48 font-mono text-4xl sm:text-6xl md:text-7xl font-extrabold text-center py-2 px-4 rounded-2xl bg-slate-100 dark:bg-slate-800/90 text-indigo-600 dark:text-indigo-400 border-2 border-indigo-500/40 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 transition-all placeholder:text-slate-300 dark:placeholder:text-slate-700"
+                            class="w-32 sm:w-40 font-mono text-4xl sm:text-6xl font-semibold text-center py-1 px-2 bg-transparent text-[#18181B] dark:text-[#F4F4F5] border-b-2 border-[#18181B] dark:border-[#F4F4F5] focus:outline-none transition-colors placeholder:text-[#E4E4E7] dark:placeholder:text-[#27272A] tabular-nums"
                         >
                     </div>
                 </div>
 
-                <!-- Sub-caption helper -->
-                <p class="text-xs text-slate-400 dark:text-slate-500 mt-4 font-medium">
-                    Auto-advances immediately when the correct answer is typed
-                </p>
-
-                <!-- Mobile / Touch On-Screen Numpad (Collapsible on Desktop, handy on Mobile/Tablet) -->
-                <div class="w-full max-w-xs mt-6 pt-5 border-t border-slate-100 dark:border-slate-800/80 grid grid-cols-3 gap-2 sm:hidden">
-                    <button type="button" onclick="app.tapKey('1')" class="py-3 rounded-xl bg-slate-100 dark:bg-slate-800 active:bg-indigo-500 active:text-white font-mono text-xl font-bold">1</button>
-                    <button type="button" onclick="app.tapKey('2')" class="py-3 rounded-xl bg-slate-100 dark:bg-slate-800 active:bg-indigo-500 active:text-white font-mono text-xl font-bold">2</button>
-                    <button type="button" onclick="app.tapKey('3')" class="py-3 rounded-xl bg-slate-100 dark:bg-slate-800 active:bg-indigo-500 active:text-white font-mono text-xl font-bold">3</button>
-                    <button type="button" onclick="app.tapKey('4')" class="py-3 rounded-xl bg-slate-100 dark:bg-slate-800 active:bg-indigo-500 active:text-white font-mono text-xl font-bold">4</button>
-                    <button type="button" onclick="app.tapKey('5')" class="py-3 rounded-xl bg-slate-100 dark:bg-slate-800 active:bg-indigo-500 active:text-white font-mono text-xl font-bold">5</button>
-                    <button type="button" onclick="app.tapKey('6')" class="py-3 rounded-xl bg-slate-100 dark:bg-slate-800 active:bg-indigo-500 active:text-white font-mono text-xl font-bold">6</button>
-                    <button type="button" onclick="app.tapKey('7')" class="py-3 rounded-xl bg-slate-100 dark:bg-slate-800 active:bg-indigo-500 active:text-white font-mono text-xl font-bold">7</button>
-                    <button type="button" onclick="app.tapKey('8')" class="py-3 rounded-xl bg-slate-100 dark:bg-slate-800 active:bg-indigo-500 active:text-white font-mono text-xl font-bold">8</button>
-                    <button type="button" onclick="app.tapKey('9')" class="py-3 rounded-xl bg-slate-100 dark:bg-slate-800 active:bg-indigo-500 active:text-white font-mono text-xl font-bold">9</button>
-                    <button type="button" onclick="app.tapKey('clear')" class="py-3 rounded-xl bg-rose-500/10 text-rose-500 font-mono text-sm font-bold">CLR</button>
-                    <button type="button" onclick="app.tapKey('0')" class="py-3 rounded-xl bg-slate-100 dark:bg-slate-800 active:bg-indigo-500 active:text-white font-mono text-xl font-bold">0</button>
-                    <button type="button" onclick="app.tapKey('back')" class="py-3 rounded-xl bg-slate-200 dark:bg-slate-700 font-mono text-sm font-bold">⌫</button>
+                <!-- Mobile Touch Numpad (Visible only on small screens) -->
+                <div class="w-full max-w-xs mt-10 pt-6 border-t border-[#E4E4E7] dark:border-[#27272A] grid grid-cols-3 gap-2 sm:hidden">
+                    <button type="button" onclick="app.tapKey('1')" class="py-3 rounded-lg bg-[#F9F9F8] dark:bg-[#121212] active:bg-[#18181B] active:text-white dark:active:bg-[#F4F4F5] dark:active:text-[#121212] border border-[#E4E4E7] dark:border-[#27272A] font-mono text-lg font-medium">1</button>
+                    <button type="button" onclick="app.tapKey('2')" class="py-3 rounded-lg bg-[#F9F9F8] dark:bg-[#121212] active:bg-[#18181B] active:text-white dark:active:bg-[#F4F4F5] dark:active:text-[#121212] border border-[#E4E4E7] dark:border-[#27272A] font-mono text-lg font-medium">2</button>
+                    <button type="button" onclick="app.tapKey('3')" class="py-3 rounded-lg bg-[#F9F9F8] dark:bg-[#121212] active:bg-[#18181B] active:text-white dark:active:bg-[#F4F4F5] dark:active:text-[#121212] border border-[#E4E4E7] dark:border-[#27272A] font-mono text-lg font-medium">3</button>
+                    <button type="button" onclick="app.tapKey('4')" class="py-3 rounded-lg bg-[#F9F9F8] dark:bg-[#121212] active:bg-[#18181B] active:text-white dark:active:bg-[#F4F4F5] dark:active:text-[#121212] border border-[#E4E4E7] dark:border-[#27272A] font-mono text-lg font-medium">4</button>
+                    <button type="button" onclick="app.tapKey('5')" class="py-3 rounded-lg bg-[#F9F9F8] dark:bg-[#121212] active:bg-[#18181B] active:text-white dark:active:bg-[#F4F4F5] dark:active:text-[#121212] border border-[#E4E4E7] dark:border-[#27272A] font-mono text-lg font-medium">5</button>
+                    <button type="button" onclick="app.tapKey('6')" class="py-3 rounded-lg bg-[#F9F9F8] dark:bg-[#121212] active:bg-[#18181B] active:text-white dark:active:bg-[#F4F4F5] dark:active:text-[#121212] border border-[#E4E4E7] dark:border-[#27272A] font-mono text-lg font-medium">6</button>
+                    <button type="button" onclick="app.tapKey('7')" class="py-3 rounded-lg bg-[#F9F9F8] dark:bg-[#121212] active:bg-[#18181B] active:text-white dark:active:bg-[#F4F4F5] dark:active:text-[#121212] border border-[#E4E4E7] dark:border-[#27272A] font-mono text-lg font-medium">7</button>
+                    <button type="button" onclick="app.tapKey('8')" class="py-3 rounded-lg bg-[#F9F9F8] dark:bg-[#121212] active:bg-[#18181B] active:text-white dark:active:bg-[#F4F4F5] dark:active:text-[#121212] border border-[#E4E4E7] dark:border-[#27272A] font-mono text-lg font-medium">8</button>
+                    <button type="button" onclick="app.tapKey('9')" class="py-3 rounded-lg bg-[#F9F9F8] dark:bg-[#121212] active:bg-[#18181B] active:text-white dark:active:bg-[#F4F4F5] dark:active:text-[#121212] border border-[#E4E4E7] dark:border-[#27272A] font-mono text-lg font-medium">9</button>
+                    <button type="button" onclick="app.tapKey('clear')" class="py-3 rounded-lg bg-[#F2F2EE] dark:bg-[#1F1F23] text-[#71717A] font-mono text-xs font-medium">CLR</button>
+                    <button type="button" onclick="app.tapKey('0')" class="py-3 rounded-lg bg-[#F9F9F8] dark:bg-[#121212] active:bg-[#18181B] active:text-white dark:active:bg-[#F4F4F5] dark:active:text-[#121212] border border-[#E4E4E7] dark:border-[#27272A] font-mono text-lg font-medium">0</button>
+                    <button type="button" onclick="app.tapKey('back')" class="py-3 rounded-lg bg-[#F2F2EE] dark:bg-[#1F1F23] text-[#71717A] font-mono text-sm font-medium">⌫</button>
                 </div>
             </div>
 
-            <!-- Bottom Quick Bar (Restart / Quit / Skip) -->
-            <div class="w-full flex flex-wrap items-center justify-between gap-3 px-2">
-                <div class="flex items-center space-x-2">
-                    <button onclick="app.startGame()" class="px-4 py-2.5 rounded-xl bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800 text-xs font-semibold flex items-center space-x-2 shadow-sm transition-colors">
+            <!-- Minimalist Action Controls -->
+            <div class="w-full flex flex-wrap items-center justify-between gap-3 text-xs font-mono text-[#71717A]">
+                <div class="flex items-center space-x-3">
+                    <button onclick="app.startGame()" class="px-3.5 py-2 rounded-lg hover:bg-[#F2F2EE] dark:hover:bg-[#18181B] hover:text-[#18181B] dark:hover:text-[#F4F4F5] border border-transparent hover:border-[#E4E4E7] dark:hover:border-[#27272A] flex items-center space-x-1.5 transition-all">
                         <i data-lucide="rotate-cw" class="w-3.5 h-3.5"></i>
-                        <span>Restart (Tab)</span>
+                        <span>Restart [Tab]</span>
                     </button>
-                    <button onclick="app.skipProblem()" class="px-4 py-2.5 rounded-xl bg-white dark:bg-slate-900 hover:bg-amber-500/10 hover:text-amber-500 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800 text-xs font-semibold flex items-center space-x-1.5 shadow-sm transition-colors" title="Skip problem (resets current streak)">
+                    <button onclick="app.skipProblem()" class="px-3.5 py-2 rounded-lg hover:bg-[#F2F2EE] dark:hover:bg-[#18181B] hover:text-[#18181B] dark:hover:text-[#F4F4F5] border border-transparent hover:border-[#E4E4E7] dark:hover:border-[#27272A] flex items-center space-x-1.5 transition-all">
                         <i data-lucide="skip-forward" class="w-3.5 h-3.5"></i>
-                        <span>Skip Problem</span>
+                        <span>Skip</span>
                     </button>
                 </div>
 
-                <button onclick="app.quitToSetup()" class="px-4 py-2.5 rounded-xl bg-white dark:bg-slate-900 hover:bg-rose-500/10 hover:text-rose-500 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-800 text-xs font-semibold flex items-center space-x-1.5 transition-colors">
-                    <i data-lucide="settings" class="w-3.5 h-3.5"></i>
-                    <span>Change Settings (Esc)</span>
+                <button onclick="app.quitToSetup()" class="px-3.5 py-2 rounded-lg hover:bg-[#F2F2EE] dark:hover:bg-[#18181B] hover:text-[#18181B] dark:hover:text-[#F4F4F5] border border-transparent hover:border-[#E4E4E7] dark:hover:border-[#27272A] flex items-center space-x-1.5 transition-all">
+                    <i data-lucide="sliders-horizontal" class="w-3.5 h-3.5"></i>
+                    <span>Config [Esc]</span>
                 </button>
             </div>
         </section>
 
         <!-- ==================== VIEW 3: POST-GAME ANALYTICS & RESULTS ==================== -->
-        <section id="view-results" class="hidden space-y-6 animate-pop">
+        <section id="view-results" class="hidden space-y-8 animate-fade">
             
-            <!-- Top Summary Banner -->
-            <div class="relative rounded-3xl bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white p-6 sm:p-8 shadow-xl border border-indigo-500/30 overflow-hidden">
-                <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <!-- Editorial Summary Header -->
+            <div class="p-6 sm:p-8 rounded-2xl bg-white dark:bg-[#18181B] border border-[#E4E4E7] dark:border-[#27272A] space-y-6">
+                <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-[#E4E4E7] dark:border-[#27272A]">
                     <div class="space-y-2">
-                        <div class="flex items-center space-x-2.5">
-                            <span id="res-new-record" class="hidden px-3 py-1 rounded-full bg-amber-400 text-slate-950 font-extrabold text-xs tracking-wide uppercase">
-                                ★ New Personal Record!
+                        <div class="flex items-center space-x-2.5 font-mono text-xs">
+                            <span id="res-new-record" class="hidden px-2 py-0.5 rounded bg-[#D95D39] text-white font-medium">
+                                NEW PB
                             </span>
-                            <span id="res-mode-pill" class="px-3 py-1 rounded-full bg-white/10 text-indigo-200 font-mono text-xs">
-                                120s Classic Drill
+                            <span id="res-mode-pill" class="text-[#71717A] uppercase tracking-wider">
+                                120s Session Report
                             </span>
                         </div>
-                        <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight font-mono flex items-baseline space-x-3">
-                            <span id="res-final-score">0</span>
-                            <span class="text-base sm:text-xl font-sans font-semibold text-indigo-300">Problems Solved</span>
-                        </h1>
-                        <p id="res-subtitle" class="text-slate-300 text-sm">
-                            Great velocity! Check your operation breakdown and slowest questions below.
-                        </p>
+                        <div class="flex items-baseline space-x-3">
+                            <span id="res-final-score" class="font-mono text-5xl sm:text-6xl font-semibold tracking-tight text-[#18181B] dark:text-[#F4F4F5]">0</span>
+                            <span class="text-sm font-mono text-[#71717A]">problems solved</span>
+                        </div>
                     </div>
 
                     <!-- Primary Action Buttons -->
-                    <div class="flex flex-wrap sm:flex-nowrap gap-3">
-                        <button onclick="app.startGame()" class="flex-1 sm:flex-initial px-6 py-3.5 rounded-2xl bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-indigo-400 hover:to-pink-400 text-white font-bold text-sm shadow-lg shadow-indigo-500/30 flex items-center justify-center space-x-2 transition-all">
-                            <i data-lucide="rotate-cw" class="w-4 h-4"></i>
-                            <span>Play Again</span>
+                    <div class="flex flex-wrap gap-2.5 font-mono text-xs">
+                        <button onclick="app.startGame()" class="px-5 py-3 rounded-xl bg-[#18181B] dark:bg-[#F4F4F5] hover:opacity-90 text-[#F9F9F8] dark:text-[#121212] font-medium flex items-center space-x-2 transition-all">
+                            <i data-lucide="rotate-cw" class="w-3.5 h-3.5"></i>
+                            <span>Repeat Drill [Enter]</span>
                         </button>
-                        <button onclick="app.copyShareSummary()" id="btn-share" class="px-4 py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-semibold text-sm border border-white/15 flex items-center justify-center space-x-2 transition-all">
-                            <i data-lucide="share-2" class="w-4 h-4"></i>
-                            <span id="share-btn-text">Share Result</span>
+                        <button onclick="app.copyShareSummary()" id="btn-share" class="px-4 py-3 rounded-xl bg-[#F9F9F8] dark:bg-[#121212] hover:bg-[#F2F2EE] dark:hover:bg-[#1F1F23] text-[#18181B] dark:text-[#F4F4F5] border border-[#E4E4E7] dark:border-[#27272A] flex items-center space-x-2 transition-colors">
+                            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                            <span id="share-btn-text">Copy Summary</span>
                         </button>
-                        <button onclick="app.showView('setup')" class="px-4 py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 text-slate-200 font-semibold text-sm border border-white/15 flex items-center justify-center space-x-2 transition-all">
-                            <i data-lucide="Sliders" class="w-4 h-4"></i>
-                            <span>Settings</span>
+                        <button onclick="app.showView('setup')" class="px-4 py-3 rounded-xl bg-[#F9F9F8] dark:bg-[#121212] hover:bg-[#F2F2EE] dark:hover:bg-[#1F1F23] text-[#71717A] hover:text-[#18181B] dark:hover:text-[#F4F4F5] border border-[#E4E4E7] dark:border-[#27272A] flex items-center space-x-2 transition-colors">
+                            <i data-lucide="sliders-horizontal" class="w-3.5 h-3.5"></i>
+                            <span>Config</span>
                         </button>
                     </div>
                 </div>
 
                 <!-- 4 Key KPI Metric Cards -->
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mt-6 pt-6 border-t border-white/10">
-                    <div class="p-3.5 rounded-2xl bg-white/5 border border-white/10">
-                        <span class="text-xs text-slate-400">Average Pace</span>
-                        <div class="font-mono text-xl sm:text-2xl font-bold text-emerald-400 mt-0.5"><span id="res-ppm">0.0</span> <span class="text-xs font-normal text-slate-400">PPM</span></div>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-6">
+                    <div>
+                        <span class="text-[11px] font-mono uppercase tracking-wider text-[#71717A]">Velocity</span>
+                        <div class="font-mono text-2xl font-semibold text-[#18181B] dark:text-[#F4F4F5] mt-1">
+                            <span id="res-ppm">0.0</span> <span class="text-xs font-normal text-[#71717A]">PPM</span>
+                        </div>
                     </div>
-                    <div class="p-3.5 rounded-2xl bg-white/5 border border-white/10">
-                        <span class="text-xs text-slate-400">Avg Time / Problem</span>
-                        <div class="font-mono text-xl sm:text-2xl font-bold text-sky-400 mt-0.5"><span id="res-avg-time">0.00</span> <span class="text-xs font-normal text-slate-400">sec</span></div>
+                    <div>
+                        <span class="text-[11px] font-mono uppercase tracking-wider text-[#71717A]">Mean Latency</span>
+                        <div class="font-mono text-2xl font-semibold text-[#18181B] dark:text-[#F4F4F5] mt-1">
+                            <span id="res-avg-time">0.00</span> <span class="text-xs font-normal text-[#71717A]">sec</span>
+                        </div>
                     </div>
-                    <div class="p-3.5 rounded-2xl bg-white/5 border border-white/10">
-                        <span class="text-xs text-slate-400">Best Streak</span>
-                        <div class="font-mono text-xl sm:text-2xl font-bold text-amber-400 mt-0.5"><span id="res-max-streak">0</span> <span class="text-xs font-normal text-slate-400">in a row</span></div>
+                    <div>
+                        <span class="text-[11px] font-mono uppercase tracking-wider text-[#71717A]">Peak Streak</span>
+                        <div class="font-mono text-2xl font-semibold text-[#18181B] dark:text-[#F4F4F5] mt-1">
+                            <span id="res-max-streak">0</span> <span class="text-xs font-normal text-[#71717A]">combo</span>
+                        </div>
                     </div>
-                    <div class="p-3.5 rounded-2xl bg-white/5 border border-white/10">
-                        <span class="text-xs text-slate-400">Clean Solve Rate</span>
-                        <div class="font-mono text-xl sm:text-2xl font-bold text-purple-400 mt-0.5"><span id="res-clean-rate">100%</span> <span class="text-xs font-normal text-slate-400">no backspace</span></div>
+                    <div>
+                        <span class="text-[11px] font-mono uppercase tracking-wider text-[#71717A]">Precision</span>
+                        <div class="font-mono text-2xl font-semibold text-[#18181B] dark:text-[#F4F4F5] mt-1">
+                            <span id="res-clean-rate">100%</span> <span class="text-xs font-normal text-[#71717A]">clean</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -589,62 +556,39 @@
             <!-- Detailed Analytics Grid -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 
-                <!-- Operation Breakdown Table -->
-                <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-sm border border-slate-200/80 dark:border-slate-800/80 space-y-4">
+                <!-- Operation Breakdown -->
+                <div class="p-6 rounded-2xl bg-white dark:bg-[#18181B] border border-[#E4E4E7] dark:border-[#27272A] space-y-5">
                     <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-2.5">
-                            <div class="p-2 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
-                                <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
-                            </div>
-                            <div>
-                                <h3 class="font-bold text-base">Breakdown by Operation</h3>
-                                <p class="text-xs text-slate-500 dark:text-slate-400">Speed & volume across arithmetic types</p>
-                            </div>
-                        </div>
+                        <span class="text-xs font-mono uppercase tracking-wider text-[#71717A]">Operation Distribution</span>
+                        <span class="text-xs font-mono text-[#71717A]">Mean Solve Time</span>
                     </div>
 
-                    <div id="res-op-breakdown" class="space-y-3">
+                    <div id="res-op-breakdown" class="space-y-4">
                         <!-- Dynamically populated operation bars -->
                     </div>
                 </div>
 
                 <!-- Slowest Problems & Bottlenecks -->
-                <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-sm border border-slate-200/80 dark:border-slate-800/80 space-y-4">
+                <div class="p-6 rounded-2xl bg-white dark:bg-[#18181B] border border-[#E4E4E7] dark:border-[#27272A] space-y-5">
                     <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-2.5">
-                            <div class="p-2 rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400">
-                                <i data-lucide="Flame" class="w-5 h-5"></i>
-                            </div>
-                            <div>
-                                <h3 class="font-bold text-base">Slowest Problems</h3>
-                                <p class="text-xs text-slate-500 dark:text-slate-400">Questions that took the longest to solve</p>
-                            </div>
-                        </div>
-                        <span class="text-xs font-mono text-slate-400">Top 5 Bottlenecks</span>
+                        <span class="text-xs font-mono uppercase tracking-wider text-[#71717A]">Latency Bottlenecks</span>
+                        <span class="text-xs font-mono text-[#71717A]">Slowest 5</span>
                     </div>
 
-                    <div id="res-slowest-list" class="space-y-2.5">
+                    <div id="res-slowest-list" class="divide-y divide-[#E4E4E7] dark:divide-[#27272A]">
                         <!-- Dynamically populated slowest problems -->
                     </div>
                 </div>
             </div>
 
             <!-- Complete Chronological Problem Log -->
-            <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-sm border border-slate-200/80 dark:border-slate-800/80 space-y-4">
+            <div class="p-6 rounded-2xl bg-white dark:bg-[#18181B] border border-[#E4E4E7] dark:border-[#27272A] space-y-4">
                 <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-2.5">
-                        <div class="p-2 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
-                            <i data-lucide="list-checks" class="w-5 h-5"></i>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-base">Session Problem History</h3>
-                            <p class="text-xs text-slate-500 dark:text-slate-400">Every problem answered during this run</p>
-                        </div>
-                    </div>
-                    <span id="res-log-count" class="text-xs font-mono text-slate-400">0 entries</span>
+                    <span class="text-xs font-mono uppercase tracking-wider text-[#71717A]">Chronological Log</span>
+                    <span id="res-log-count" class="text-xs font-mono text-[#71717A]">0 entries</span>
                 </div>
 
-                <div id="res-history-chips" class="flex flex-wrap gap-2 max-h-48 overflow-y-auto p-1">
+                <div id="res-history-chips" class="flex flex-wrap gap-2 max-h-44 overflow-y-auto pt-1">
                     <!-- Populated via JS -->
                 </div>
             </div>
@@ -653,18 +597,18 @@
 
     </main>
 
-    <!-- Footer -->
-    <footer class="w-full py-4 text-center text-xs text-slate-400 dark:text-slate-600 border-t border-slate-200/50 dark:border-slate-900">
-        <div class="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-            <span>ZetaPulse Speed Arithmetic — Standard Zetamac Rules & Instant Auto-Validation</span>
-            <span class="font-mono">Tip: Press <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400">Tab</kbd> anytime during a drill for an instant restart</span>
+    <!-- Minimal Footer -->
+    <footer class="w-full py-5 text-xs font-mono text-[#71717A] border-t border-[#E4E4E7] dark:border-[#27272A]">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-2">
+            <span>zetapulse — minimalist mental arithmetic</span>
+            <span><kbd class="px-1.5 py-0.5 rounded bg-[#F2F2EE] dark:bg-[#18181B] border border-[#E4E4E7] dark:border-[#27272A] text-[#18181B] dark:text-[#F4F4F5]">Tab</kbd> quick restart · <kbd class="px-1.5 py-0.5 rounded bg-[#F2F2EE] dark:bg-[#18181B] border border-[#E4E4E7] dark:border-[#27272A] text-[#18181B] dark:text-[#F4F4F5]">Esc</kbd> config</span>
         </div>
     </footer>
 
     <!-- Application JavaScript -->
     <script>
         /**
-         * Web Audio Synthesizer for zero-latency sound effects without external files
+         * Quiet Tactile Web Audio Synthesizer (Soft mechanical click / muted tone)
          */
         class SoundEngine {
             constructor() {
@@ -691,22 +635,22 @@
                 const osc = this.ctx.createOscillator();
                 const gain = this.ctx.createGain();
 
-                // Pitch scales subtly with combo streak (caps at streak 15)
-                const semitoneBoost = Math.min(streak, 15) * 22;
-                const baseFreq = 520 + semitoneBoost;
+                // Soft, understated wooden/tactile tone
+                const pitchStep = Math.min(streak, 12) * 12;
+                const baseFreq = 380 + pitchStep;
 
                 osc.type = 'sine';
                 osc.frequency.setValueAtTime(baseFreq, now);
-                osc.frequency.exponentialRampToValueAtTime(baseFreq * 1.35, now + 0.085);
+                osc.frequency.exponentialRampToValueAtTime(baseFreq * 1.15, now + 0.055);
 
-                gain.gain.setValueAtTime(0.14, now);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.095);
+                gain.gain.setValueAtTime(0.07, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.065);
 
                 osc.connect(gain);
                 gain.connect(this.ctx.destination);
 
                 osc.start(now);
-                osc.stop(now + 0.1);
+                osc.stop(now + 0.07);
             }
 
             playMilestone() {
@@ -714,23 +658,23 @@
                 this.init();
                 if (!this.ctx) return;
 
-                const notes = [587.33, 783.99, 1046.50]; // D5, G5, C6 chord arpeggio
+                const notes = [440, 554.37]; // Clean fifth interval
                 notes.forEach((freq, idx) => {
-                    const now = this.ctx.currentTime + idx * 0.055;
+                    const now = this.ctx.currentTime + idx * 0.05;
                     const osc = this.ctx.createOscillator();
                     const gain = this.ctx.createGain();
 
-                    osc.type = 'triangle';
+                    osc.type = 'sine';
                     osc.frequency.setValueAtTime(freq, now);
 
-                    gain.gain.setValueAtTime(0.16, now);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+                    gain.gain.setValueAtTime(0.08, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
 
                     osc.connect(gain);
                     gain.connect(this.ctx.destination);
 
                     osc.start(now);
-                    osc.stop(now + 0.23);
+                    osc.stop(now + 0.15);
                 });
             }
 
@@ -743,18 +687,18 @@
                 const osc = this.ctx.createOscillator();
                 const gain = this.ctx.createGain();
 
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(240, now);
-                osc.frequency.linearRampToValueAtTime(160, now + 0.1);
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(190, now);
+                osc.frequency.linearRampToValueAtTime(140, now + 0.07);
 
-                gain.gain.setValueAtTime(0.08, now);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.11);
+                gain.gain.setValueAtTime(0.05, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
 
                 osc.connect(gain);
                 gain.connect(this.ctx.destination);
 
                 osc.start(now);
-                osc.stop(now + 0.12);
+                osc.stop(now + 0.085);
             }
 
             playFinish() {
@@ -762,23 +706,23 @@
                 this.init();
                 if (!this.ctx) return;
 
-                const notes = [440, 554.37, 659.25, 880]; // A major celebration
+                const notes = [440, 523.25, 659.25];
                 notes.forEach((freq, idx) => {
-                    const now = this.ctx.currentTime + idx * 0.08;
+                    const now = this.ctx.currentTime + idx * 0.07;
                     const osc = this.ctx.createOscillator();
                     const gain = this.ctx.createGain();
 
-                    osc.type = 'triangle';
+                    osc.type = 'sine';
                     osc.frequency.setValueAtTime(freq, now);
 
-                    gain.gain.setValueAtTime(0.18, now);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+                    gain.gain.setValueAtTime(0.09, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.24);
 
                     osc.connect(gain);
                     gain.connect(this.ctx.destination);
 
                     osc.start(now);
-                    osc.stop(now + 0.36);
+                    osc.stop(now + 0.25);
                 });
             }
         }
@@ -788,7 +732,7 @@
          */
         const app = {
             sound: new SoundEngine(),
-            theme: 'dark',
+            theme: 'light', // Default to Alabaster Paper Light theme
             currentView: 'setup',
             duration: 120,
             durationsList: [30, 60, 120, 300],
@@ -833,8 +777,8 @@
                     const savedTheme = localStorage.getItem('zetapulse_theme');
                     if (savedTheme === 'light' || savedTheme === 'dark') {
                         this.theme = savedTheme;
-                        document.documentElement.classList.toggle('dark', this.theme === 'dark');
                     }
+                    document.documentElement.classList.toggle('dark', this.theme === 'dark');
                 } catch (e) {
                     this.highScores = { 30: 0, 60: 0, 120: 0, 300: 0 };
                 }
@@ -851,7 +795,7 @@
             bindEvents() {
                 const input = document.getElementById('answer-input');
 
-                // Instant auto-advance answer check on every input event
+                // Zero-latency auto-validation on keystroke
                 input.addEventListener('input', () => {
                     if (!this.isPlaying || !this.currentProblem) return;
                     const raw = input.value.trim();
@@ -863,14 +807,14 @@
                     }
                 });
 
-                // Detect backspace/corrections for Clean Solve Rate metric
+                // Detect backspace/corrections for Precision metric
                 input.addEventListener('keydown', (e) => {
                     if (e.key === 'Backspace' || e.key === 'Delete') {
                         this.hadBackspaceOnCurrent = true;
                     }
                 });
 
-                // Global Keyboard Shortcuts (Tab to quick restart, Escape to return to setup)
+                // Global Keyboard Shortcuts
                 window.addEventListener('keydown', (e) => {
                     if (this.currentView === 'game') {
                         if (e.key === 'Tab') {
@@ -884,6 +828,9 @@
                         if (e.key === 'Enter' || e.key === 'Tab') {
                             e.preventDefault();
                             this.startGame();
+                        } else if (e.key === 'Escape') {
+                            e.preventDefault();
+                            this.showView('setup');
                         }
                     }
                 });
@@ -911,7 +858,7 @@
                     localStorage.setItem('zetapulse_sound', String(this.sound.enabled));
                 } catch (e) {}
                 this.updateSoundIcon();
-                if (this.sound.enabled) this.sound.playSolve(3);
+                if (this.sound.enabled) this.sound.playSolve(2);
             },
 
             updateSoundIcon() {
@@ -938,6 +885,7 @@
             setDuration(sec) {
                 this.duration = sec;
                 this.renderDurationButtons();
+                this.renderHighScores();
                 this.updateNavBestBadge();
             },
 
@@ -946,16 +894,18 @@
                 buttons.forEach(btn => {
                     const d = Number(btn.getAttribute('data-dur'));
                     if (d === this.duration) {
-                        btn.className = 'dur-btn p-3.5 rounded-2xl border-2 border-indigo-500 bg-indigo-500/10 text-indigo-600 dark:text-indigo-300 text-left transition-all flex flex-col justify-between shadow-sm';
+                        btn.className = 'dur-btn p-3.5 rounded-xl border border-[#18181B] dark:border-[#F4F4F5] bg-[#18181B] dark:bg-[#F4F4F5] text-[#F9F9F8] dark:text-[#121212] text-left transition-all flex flex-col justify-between';
+                        btn.querySelector('span:first-child').className = 'text-[11px] font-mono opacity-75';
                     } else {
-                        btn.className = 'dur-btn p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-left transition-all flex flex-col justify-between';
+                        btn.className = 'dur-btn p-3.5 rounded-xl border border-[#E4E4E7] dark:border-[#27272A] bg-white dark:bg-[#18181B] hover:border-[#71717A] text-[#18181B] dark:text-[#F4F4F5] text-left transition-all flex flex-col justify-between';
+                        btn.querySelector('span:first-child').className = 'text-[11px] font-mono text-[#71717A]';
                     }
                 });
             },
 
             updateNavBestBadge() {
                 const best = this.highScores[this.duration] || 0;
-                document.getElementById('nav-best-label').textContent = `${this.duration}s Best:`;
+                document.getElementById('nav-best-label').textContent = `${this.duration}s PB:`;
                 document.getElementById('nav-best-val').textContent = best;
             },
 
@@ -966,13 +916,13 @@
                     const ppm = best > 0 ? ((best / dur) * 60).toFixed(1) : '0.0';
                     const isSelected = dur === this.duration;
                     return `
-                        <div onclick="app.setDuration(${dur})" class="cursor-pointer p-3 rounded-2xl border transition-all ${isSelected ? 'border-amber-500/40 bg-amber-500/5' : 'border-slate-200/70 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40'}">
-                            <div class="flex items-center justify-between text-xs text-slate-400 font-mono">
-                                <span>${dur}s Mode</span>
-                                <span>${ppm} PPM</span>
+                        <div onclick="app.setDuration(${dur})" class="cursor-pointer p-3.5 rounded-xl border transition-all ${isSelected ? 'border-[#18181B] dark:border-[#F4F4F5] bg-white dark:bg-[#18181B]' : 'border-[#E4E4E7] dark:border-[#27272A] bg-white/60 dark:bg-[#18181B]/60 hover:border-[#71717A]'}">
+                            <div class="flex items-center justify-between text-[11px] text-[#71717A] font-mono">
+                                <span>${dur}s</span>
+                                <span>${ppm} ppm</span>
                             </div>
-                            <div class="font-mono text-xl font-extrabold text-slate-800 dark:text-slate-100 mt-1">
-                                ${best} <span class="text-xs font-sans font-normal text-slate-400">pts</span>
+                            <div class="font-mono text-lg font-semibold text-[#18181B] dark:text-[#F4F4F5] mt-1">
+                                ${best}
                             </div>
                         </div>
                     `;
@@ -1037,13 +987,7 @@
                     cfg.div.a1 === 2 && cfg.div.a2 === 12  && cfg.div.b1 === 2 && cfg.div.b2 === 100;
 
                 const badge = document.getElementById('preset-indicator');
-                if (isClassic) {
-                    badge.textContent = 'Classic Zetamac Preset';
-                    badge.className = 'text-xs font-mono px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-medium';
-                } else {
-                    badge.textContent = 'Custom Range Configuration';
-                    badge.className = 'text-xs font-mono px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 font-medium';
-                }
+                badge.textContent = isClassic ? 'Classic Zetamac' : 'Custom Bounds';
             },
 
             applyPreset(presetName) {
@@ -1069,7 +1013,6 @@
                     setVals('mul', 2, 25, 2, 100);
                     setVals('div', 2, 25, 2, 100);
                 } else {
-                    // Classic Zetamac defaults
                     setVals('add', 2, 100, 2, 100);
                     setVals('sub', 2, 100, 2, 100);
                     setVals('mul', 2, 12, 2, 100);
@@ -1111,7 +1054,6 @@
                     opLabel = 'ADDITION';
                     opSymbol = '+';
                 } else if (op === 'sub') {
-                    // Zetamac rule: subtraction is addition problems in reverse to guarantee clean positive integers
                     const a = this.randInt(cfg.sub.a1, cfg.sub.a2);
                     const b = this.randInt(cfg.sub.b1, cfg.sub.b2);
                     const sum = a + b;
@@ -1127,7 +1069,6 @@
                     opLabel = 'MULTIPLICATION';
                     opSymbol = '×';
                 } else if (op === 'div') {
-                    // Zetamac rule: division is multiplication problems in reverse to guarantee exact integer quotients
                     const a = this.randInt(cfg.div.a1, cfg.div.a2);
                     const b = this.randInt(cfg.div.b1, cfg.div.b2);
                     const prod = a * b;
@@ -1137,7 +1078,6 @@
                     opSymbol = '÷';
                 }
 
-                // Avoid exact duplicate problem back-to-back if possible
                 if (this.currentProblem && this.currentProblem.text === text && Math.random() < 0.85) {
                     return this.generateProblem();
                 }
@@ -1186,7 +1126,6 @@
                 this.startTime = performance.now();
                 this.endTime = this.startTime + this.duration * 1000;
 
-                // Reset HUD
                 document.getElementById('hud-timer').textContent = this.duration;
                 document.getElementById('hud-score').textContent = '0';
                 document.getElementById('hud-ppm').textContent = '0.0';
@@ -1201,7 +1140,6 @@
                 input.value = '';
                 setTimeout(() => input.focus(), 20);
 
-                // High-precision 50ms telemetry loop
                 this.timerInterval = setInterval(() => {
                     this.tick();
                 }, 50);
@@ -1217,23 +1155,21 @@
                 const timerEl = document.getElementById('hud-timer');
                 timerEl.textContent = remainingSecCeil;
 
-                // Urgent timer styling in final 10 seconds
+                // Subtle functional orange indicator in final 10 seconds
                 if (remainingSecCeil <= 10) {
-                    timerEl.className = 'font-mono text-2xl sm:text-3xl font-extrabold text-rose-500 animate-pulse';
+                    timerEl.className = 'font-mono text-2xl sm:text-3xl font-semibold text-[#D95D39] tabular-nums';
                 } else {
-                    timerEl.className = 'font-mono text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white';
+                    timerEl.className = 'font-mono text-2xl sm:text-3xl font-semibold text-[#18181B] dark:text-[#F4F4F5] tabular-nums';
                 }
 
-                // Progress bar percentage
                 const pct = (remainingMs / (this.duration * 1000)) * 100;
                 document.getElementById('hud-progress').style.width = `${pct}%`;
 
-                // Live PPM & Projected Score
                 const livePPM = (this.score / elapsedSec) * 60;
                 document.getElementById('hud-ppm').textContent = this.score > 0 ? livePPM.toFixed(1) : '0.0';
 
                 const projected = Math.round((this.score / elapsedSec) * this.duration);
-                document.getElementById('problem-projected').innerHTML = `Projected Final: <strong class="text-indigo-600 dark:text-indigo-400">${this.score > 0 ? projected : 0}</strong>`;
+                document.getElementById('problem-projected').innerHTML = `Est. Final: <strong class="text-[#18181B] dark:text-[#F4F4F5] font-medium">${this.score > 0 ? projected : 0}</strong>`;
 
                 if (remainingMs <= 0) {
                     this.finishGame();
@@ -1248,10 +1184,9 @@
                 const probText = document.getElementById('problem-text');
                 probText.textContent = this.currentProblem.text;
                 
-                // Retrigger subtle pop animation
-                probText.classList.remove('animate-pop');
+                probText.classList.remove('animate-tick');
                 void probText.offsetWidth;
-                probText.classList.add('animate-pop');
+                probText.classList.add('animate-tick');
 
                 document.getElementById('problem-op-tag').textContent = this.currentProblem.opLabel;
 
@@ -1276,14 +1211,12 @@
                     clean: !this.hadBackspaceOnCurrent
                 });
 
-                // Sound feedback
                 if (this.streak > 0 && this.streak % 10 === 0) {
                     this.sound.playMilestone();
                 } else {
                     this.sound.playSolve(this.streak);
                 }
 
-                // Update HUD Score & Floating +1 animation
                 document.getElementById('hud-score').textContent = this.score;
                 document.getElementById('hud-streak').textContent = this.streak;
                 this.spawnFloatingPlusOne();
@@ -1305,38 +1238,26 @@
                 const container = document.getElementById('score-float-container');
                 const badge = document.createElement('span');
                 badge.textContent = '+1';
-                badge.className = 'absolute -top-3 left-1 font-mono text-xs font-extrabold text-emerald-500 animate-float pointer-events-none';
+                badge.className = 'absolute -top-3 left-1 font-mono text-xs font-medium text-[#71717A] animate-float pointer-events-none';
                 container.appendChild(badge);
-                setTimeout(() => badge.remove(), 550);
+                setTimeout(() => badge.remove(), 450);
             },
 
             updateStreakVisuals() {
                 const card = document.getElementById('arena-card');
                 const badge = document.getElementById('hud-streak-badge');
-                const aura = document.getElementById('streak-aura');
 
-                card.classList.remove('streak-fire', 'streak-cosmic', 'border-amber-500/60', 'border-purple-500/70');
-
-                if (this.streak >= 25) {
-                    card.classList.add('streak-cosmic', 'border-purple-500/70');
+                if (this.streak >= 10) {
+                    card.className = 'w-full py-10 sm:py-16 px-6 rounded-2xl bg-white dark:bg-[#18181B] border border-[#18181B] dark:border-[#F4F4F5] flex flex-col items-center justify-center transition-colors';
                     badge.classList.remove('hidden');
-                    badge.textContent = '⚡ UNSTOPPABLE';
-                    badge.className = 'text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-purple-500/20 text-purple-300 border border-purple-500/40';
-                    aura.style.opacity = '1';
-                } else if (this.streak >= 10) {
-                    card.classList.add('streak-fire', 'border-amber-500/60');
-                    badge.classList.remove('hidden');
-                    badge.textContent = '🔥 ON FIRE';
-                    badge.className = 'text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-400 border border-amber-500/40';
-                    aura.style.opacity = '0.8';
+                    badge.textContent = 'FLOW';
                 } else if (this.streak >= 5) {
+                    card.className = 'w-full py-10 sm:py-16 px-6 rounded-2xl bg-white dark:bg-[#18181B] border border-[#E4E4E7] dark:border-[#27272A] flex flex-col items-center justify-center transition-colors';
                     badge.classList.remove('hidden');
-                    badge.textContent = '🔥 HEATING UP';
-                    badge.className = 'text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-amber-500/15 text-amber-400 border border-amber-500/30';
-                    aura.style.opacity = '0.35';
+                    badge.textContent = 'x5+';
                 } else {
+                    card.className = 'w-full py-10 sm:py-16 px-6 rounded-2xl bg-white dark:bg-[#18181B] border border-[#E4E4E7] dark:border-[#27272A] flex flex-col items-center justify-center transition-colors';
                     badge.classList.add('hidden');
-                    aura.style.opacity = '0';
                 }
             },
 
@@ -1351,7 +1272,6 @@
                 if (this.timerInterval) clearInterval(this.timerInterval);
                 this.sound.playFinish();
 
-                // Check for new personal record
                 const prevBest = this.highScores[this.duration] || 0;
                 const isNewRecord = this.score > prevBest && this.score > 0;
                 if (isNewRecord) {
@@ -1367,7 +1287,7 @@
 
             renderResults(isNewRecord) {
                 document.getElementById('res-new-record').classList.toggle('hidden', !isNewRecord);
-                document.getElementById('res-mode-pill').textContent = `${this.duration}s Speed Drill`;
+                document.getElementById('res-mode-pill').textContent = `${this.duration}s Session Report`;
                 document.getElementById('res-final-score').textContent = this.score;
 
                 const ppm = ((this.score / this.duration) * 60).toFixed(1);
@@ -1385,10 +1305,10 @@
 
                 // Operation Breakdown
                 const opMeta = [
-                    { key: 'add', name: 'Addition (+)', color: 'bg-emerald-500', textColor: 'text-emerald-500' },
-                    { key: 'sub', name: 'Subtraction (−)', color: 'bg-sky-500', textColor: 'text-sky-500' },
-                    { key: 'mul', name: 'Multiplication (×)', color: 'bg-amber-500', textColor: 'text-amber-500' },
-                    { key: 'div', name: 'Division (÷)', color: 'bg-rose-500', textColor: 'text-rose-500' }
+                    { key: 'add', name: 'Addition (+)' },
+                    { key: 'sub', name: 'Subtraction (−)' },
+                    { key: 'mul', name: 'Multiplication (×)' },
+                    { key: 'div', name: 'Division (÷)' }
                 ];
 
                 const breakdownContainer = document.getElementById('res-op-breakdown');
@@ -1396,21 +1316,21 @@
                     const items = this.solvedProblems.filter(p => p.op === meta.key);
                     const count = items.length;
                     const avgOpSec = count > 0
-                        ? (items.reduce((s, i) => s + i.timeMs, 0) / count / 1000).toFixed(2) + 's avg'
-                        : 'No problems';
-                    const pctWidth = this.score > 0 ? Math.max(4, Math.round((count / this.score) * 100)) : 0;
+                        ? (items.reduce((s, i) => s + i.timeMs, 0) / count / 1000).toFixed(2) + 's'
+                        : '—';
+                    const pctWidth = this.score > 0 ? Math.max(2, Math.round((count / this.score) * 100)) : 0;
 
                     return `
-                        <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-800 space-y-2">
-                            <div class="flex items-center justify-between text-xs sm:text-sm">
-                                <span class="font-bold text-slate-800 dark:text-slate-200">${meta.name}</span>
-                                <div class="font-mono flex items-center space-x-3">
-                                    <span class="text-slate-400">${avgOpSec}</span>
-                                    <span class="font-extrabold ${meta.textColor}">${count} solved</span>
+                        <div class="space-y-1.5">
+                            <div class="flex items-center justify-between text-xs font-mono">
+                                <span class="text-[#18181B] dark:text-[#F4F4F5]">${meta.name}</span>
+                                <div class="flex items-center space-x-4">
+                                    <span class="text-[#71717A]">${avgOpSec}</span>
+                                    <span class="font-semibold w-14 text-right">${count}</span>
                                 </div>
                             </div>
-                            <div class="w-full h-2 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
-                                <div class="h-full ${meta.color} rounded-full transition-all duration-500" style="width: ${count > 0 ? pctWidth : 0}%"></div>
+                            <div class="w-full h-1.5 rounded-full bg-[#F2F2EE] dark:bg-[#121212] overflow-hidden">
+                                <div class="h-full bg-[#18181B] dark:bg-[#F4F4F5] transition-all duration-500" style="width: ${count > 0 ? pctWidth : 0}%"></div>
                             </div>
                         </div>
                     `;
@@ -1420,8 +1340,8 @@
                 const slowestContainer = document.getElementById('res-slowest-list');
                 if (this.solvedProblems.length === 0) {
                     slowestContainer.innerHTML = `
-                        <div class="p-8 text-center text-slate-400 text-sm">
-                            Complete at least one problem to see latency bottlenecks.
+                        <div class="py-8 text-center text-[#71717A] text-xs font-mono">
+                            No completed problems recorded.
                         </div>
                     `;
                 } else {
@@ -1432,14 +1352,14 @@
                     slowestContainer.innerHTML = sortedSlowest.map((item, idx) => {
                         const sec = (item.timeMs / 1000).toFixed(2);
                         return `
-                            <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-800">
+                            <div class="flex items-center justify-between py-2.5 text-xs font-mono">
                                 <div class="flex items-center space-x-3">
-                                    <span class="w-6 h-6 rounded-lg bg-rose-500/15 text-rose-500 font-mono text-xs font-bold flex items-center justify-center">#${idx + 1}</span>
-                                    <span class="font-mono font-bold text-sm sm:text-base text-slate-800 dark:text-slate-100">${item.displayExpr} = <strong class="text-indigo-500">${item.answer}</strong></span>
+                                    <span class="text-[#71717A]">0${idx + 1}</span>
+                                    <span class="text-[#18181B] dark:text-[#F4F4F5] font-medium">${item.displayExpr} = ${item.answer}</span>
                                 </div>
                                 <div class="flex items-center space-x-2">
-                                    ${!item.clean ? '<span class="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/15 text-amber-500">corrected</span>' : ''}
-                                    <span class="font-mono text-xs sm:text-sm font-bold px-2.5 py-1 rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400">${sec}s</span>
+                                    ${!item.clean ? '<span class="text-[10px] px-1.5 py-0.5 rounded bg-[#F2F2EE] dark:bg-[#121212] text-[#71717A]">edited</span>' : ''}
+                                    <span class="text-[#18181B] dark:text-[#F4F4F5] font-semibold">${sec}s</span>
                                 </div>
                             </div>
                         `;
@@ -1450,15 +1370,15 @@
                 document.getElementById('res-log-count').textContent = `${this.solvedProblems.length} solved`;
                 const historyContainer = document.getElementById('res-history-chips');
                 if (this.solvedProblems.length === 0) {
-                    historyContainer.innerHTML = `<span class="text-xs text-slate-400">No problems solved in this session.</span>`;
+                    historyContainer.innerHTML = `<span class="text-xs font-mono text-[#71717A]">No problems solved in this session.</span>`;
                 } else {
                     historyContainer.innerHTML = this.solvedProblems.map((item, idx) => {
                         const sec = (item.timeMs / 1000).toFixed(1);
                         return `
-                            <div class="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200/70 dark:border-slate-700/70 font-mono text-xs flex items-center space-x-2">
-                                <span class="text-slate-400">${idx + 1}.</span>
-                                <span class="font-bold text-slate-800 dark:text-slate-200">${item.displayExpr} = ${item.answer}</span>
-                                <span class="text-[10px] text-indigo-500">(${sec}s)</span>
+                            <div class="px-2.5 py-1 rounded-md bg-[#F9F9F8] dark:bg-[#121212] border border-[#E4E4E7] dark:border-[#27272A] font-mono text-xs flex items-center space-x-1.5">
+                                <span class="text-[#71717A]">${idx + 1}.</span>
+                                <span class="text-[#18181B] dark:text-[#F4F4F5]">${item.displayExpr}=${item.answer}</span>
+                                <span class="text-[10px] text-[#71717A]">(${sec}s)</span>
                             </div>
                         `;
                     }).join('');
@@ -1467,7 +1387,7 @@
 
             copyShareSummary() {
                 const ppm = ((this.score / this.duration) * 60).toFixed(1);
-                const text = `⚡ ZetaPulse Speed Arithmetic (${this.duration}s)\n🏆 Score: ${this.score} (${ppm} PPM)\n🔥 Max Streak: ${this.maxStreak}`;
+                const text = `ZetaPulse (${this.duration}s) — Score: ${this.score} | ${ppm} PPM | Peak Streak: ${this.maxStreak}`;
                 
                 const tempInput = document.createElement('textarea');
                 tempInput.value = text;
@@ -1477,9 +1397,9 @@
                 document.body.removeChild(tempInput);
 
                 const btnText = document.getElementById('share-btn-text');
-                btnText.textContent = 'Copied to Clipboard!';
+                btnText.textContent = 'Copied';
                 setTimeout(() => {
-                    btnText.textContent = 'Share Result';
+                    btnText.textContent = 'Copy Summary';
                 }, 2000);
             }
         };
